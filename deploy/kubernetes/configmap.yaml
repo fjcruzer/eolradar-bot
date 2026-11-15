@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eolradar-bot
+  labels:
+    app.kubernetes.io/name: eolradar-bot
+data:
+  EOL_API_BASE: https://eolradar.dev
+  PORT: "8080"
+  HOST: "0.0.0.0"
+  # memory needs no volume. For a file or sqlite store, mount a writable
+  # directory and set STORE and STORE_PATH. See docs/self-hosting.md.
+  STORE: memory
+  DIGEST_SERVICES: all
+  # Monday 14:00 UTC. Set to "off" when another scheduler posts the digest,
+  # and before raising replicas above 1.
+  DIGEST_CRON: "0 14 * * MON"
+  DIGEST_CATCHUP_MINUTES: "15"

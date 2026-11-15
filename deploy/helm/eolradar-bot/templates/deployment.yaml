@@ -1,0 +1,120 @@
+{{- if and (gt (int .Values.replicaCount) 1) (ne .Values.config.digestCron "off") }}
+{{- fail "replicaCount must be 1 while config.digestCron is enabled. Set config.digestCron to \"off\" before running more than one replica, or each pod posts the Monday digest." }}
+{{- end }}
+{{- if and .Values.persistence.enabled (ne .Values.config.store "file") (ne .Values.config.store "sqlite") }}
+{{- fail "persistence.enabled needs config.store set to file or sqlite, and config.storePath on the /data volume." }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eolradar-bot.fullname" . }}
+  labels:
+    {{- include "eolradar-bot.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 120
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "eolradar-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "eolradar-bot.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "eolradar-bot.fullname" . }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 15
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: eolradar-bot
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: {{ include "eolradar-bot.fullname" . }}
+          env:
+            - name: HOME
+              value: /tmp
+            {{- if or .Values.secret.create .Values.secret.existingSecret }}
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "eolradar-bot.secretName" . }}
+                  key: SLACK_SIGNING_SECRET
+                  optional: true
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "eolradar-bot.secretName" . }}
+                  key: SLACK_BOT_TOKEN
+                  optional: true
+            - name: SLACK_DIGEST_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "eolradar-bot.secretName" . }}
+                  key: SLACK_DIGEST_CHANNEL
+                  optional: true
+            - name: SLACK_APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "eolradar-bot.secretName" . }}
+                  key: SLACK_APP_TOKEN
+                  optional: true
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.enabled }}
+            - name: data
+              mountPath: /data
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.persistence.enabled }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "eolradar-bot.fullname" . }}
+        {{- end }}

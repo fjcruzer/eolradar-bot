@@ -6,6 +6,7 @@ worker-configuration.d.ts
 .env.*
 !.env.example
 dist/
+data/
 coverage/
 *.log
 .DS_Store

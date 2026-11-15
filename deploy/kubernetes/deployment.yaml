@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eolradar-bot
+  labels:
+    app.kubernetes.io/name: eolradar-bot
+spec:
+  # The Monday digest scheduler runs inside this process. Keep a single replica.
+  # Recreate avoids two schedulers overlapping during a rollout. Raise replicas
+  # only after DIGEST_CRON is "off", or the channel is posted once per pod.
+  replicas: 1
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 120
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eolradar-bot
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eolradar-bot
+    spec:
+      serviceAccountName: eolradar-bot
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 15
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: eolradar-bot
+          image: ghcr.io/fjcruzer/eolradar-bot:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: eolradar-bot
+          env:
+            - name: HOME
+              value: /tmp
+            # Missing Secret or keys leave the variable unset. The process still
+            # serves /healthz. See secret.example.yaml.
+            - name: SLACK_SIGNING_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: eolradar-bot
+                  key: SLACK_SIGNING_SECRET
+                  optional: true
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: eolradar-bot
+                  key: SLACK_BOT_TOKEN
+                  optional: true
+            - name: SLACK_DIGEST_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: eolradar-bot
+                  key: SLACK_DIGEST_CHANNEL
+                  optional: true
+            - name: SLACK_APP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: eolradar-bot
+                  key: SLACK_APP_TOKEN
+                  optional: true
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            # Uncomment, and set STORE=file plus STORE_PATH=/data/store.json,
+            # to keep the store on a volume.
+            # - name: data
+            #   mountPath: /data
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        # - name: data
+        #   persistentVolumeClaim:
+        #     claimName: eolradar-bot

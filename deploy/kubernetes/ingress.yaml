@@ -1,0 +1,23 @@
+# Optional. Socket Mode does not need an Ingress.
+# For HTTP slash commands, point the Slack request URL at
+# https://<host>/slack/commands. Terminate TLS at the ingress controller.
+# This file is not included in kustomization.yaml.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eolradar-bot
+  labels:
+    app.kubernetes.io/name: eolradar-bot
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: eol.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eolradar-bot
+                port:
+                  name: http

@@ -18,3 +18,97 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run typecheck
+      - run: npm run build
+
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t eolradar-bot:ci .
+
+      - name: Confirm the image runs as uid 1000
+        run: test "$(docker run --rm --entrypoint id eolradar-bot:ci -u)" = "1000"
+
+      - name: Smoke test /healthz
+        run: |
+          set -euo pipefail
+          docker rm -f eolradar-bot-smoke >/dev/null 2>&1 || true
+          cleanup() {
+            status=$?
+            docker logs eolradar-bot-smoke || true
+            docker rm -f eolradar-bot-smoke >/dev/null || true
+            exit "$status"
+          }
+          trap cleanup EXIT
+          docker run -d --name eolradar-bot-smoke \
+            --read-only \
+            --tmpfs /tmp \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --user 1000:1000 \
+            -e HOME=/tmp \
+            -e DIGEST_CRON=off \
+            -e STORE=memory \
+            -p 18080:8080 \
+            eolradar-bot:ci
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:18080/healthz >/dev/null; then
+              curl -fsS http://127.0.0.1:18080/health
+              echo
+              curl -fsS http://127.0.0.1:18080/readyz
+              echo
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "container did not become healthy" >&2
+          exit 1
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint and render the chart
+        run: |
+          set -euo pipefail
+          helm lint deploy/helm/eolradar-bot
+          helm template eolradar-bot deploy/helm/eolradar-bot >/tmp/eolradar-helm.yaml
+          if helm template eolradar-bot deploy/helm/eolradar-bot --set replicaCount=2 >/tmp/eolradar-helm-bad.yaml 2>/tmp/eolradar-helm-bad.err; then
+            echo "replicaCount 2 should be rejected while the digest cron is enabled" >&2
+            exit 1
+          fi
+          grep -q "replicaCount must be 1" /tmp/eolradar-helm-bad.err
+          helm template eolradar-bot deploy/helm/eolradar-bot --set replicaCount=2 --set config.digestCron=off >/dev/null
+
+      - name: Create a kind cluster
+        uses: helm/kind-action@v1.15.2
+        with:
+          cluster_name: eolradar
+          wait: 90s
+
+      - name: Load the image into kind
+        run: kind load docker-image eolradar-bot:ci --name eolradar
+
+      - name: Apply the manifests and wait until ready
+        run: |
+          set -euo pipefail
+          kubectl apply -k deploy/ci
+          kubectl rollout status deployment/eolradar-bot --timeout=180s
+          kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=eolradar-bot --timeout=180s
+          kubectl exec deploy/eolradar-bot -- node -e "fetch('http://127.0.0.1:8080/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+          kubectl exec deploy/eolradar-bot -- node -e "fetch('http://127.0.0.1:8080/readyz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+      - name: Install the Helm chart and wait until ready
+        run: |
+          set -euo pipefail
+          kubectl delete -k deploy/ci --wait=true
+          helm upgrade --install eolradar-bot deploy/helm/eolradar-bot \
+            --set image.repository=eolradar-bot \
+            --set image.tag=ci \
+            --set image.pullPolicy=IfNotPresent \
+            --set config.digestCron=off
+          kubectl rollout status deployment/eolradar-bot --timeout=180s
+          kubectl wait --for=condition=ready pod -l app.kubernetes.io/instance=eolradar-bot --timeout=180s
+          kubectl exec deploy/eolradar-bot -- node -e "fetch('http://127.0.0.1:8080/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"

@@ -13,7 +13,9 @@ features:
     always_online: false
   slash_commands:
     - command: /eol
-      # Replace the host with the workers.dev URL printed by `wrangler deploy`.
+      # Replace the host with the workers.dev URL printed by `wrangler deploy`,
+      # or with the public host of a self-hosted HTTP deployment.
+      # Socket Mode does not use this URL. See examples/slack-app-manifest.socket.yml.
       url: https://eolradar-bot.example.workers.dev/slack/commands
       description: Look up cloud end-of-support dates
       usage_hint: "[service | upcoming [30|90|180]]"

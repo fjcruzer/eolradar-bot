@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eolradar-bot.fullname" . }}
+  labels:
+    {{- include "eolradar-bot.labels" . | nindent 4 }}
+data:
+  EOL_API_BASE: {{ .Values.config.eolApiBase | quote }}
+  PORT: "8080"
+  HOST: "0.0.0.0"
+  STORE: {{ .Values.config.store | quote }}
+  STORE_PATH: {{ .Values.config.storePath | quote }}
+  DIGEST_SERVICES: {{ .Values.config.digestServices | quote }}
+  DIGEST_CRON: {{ .Values.config.digestCron | quote }}
+  DIGEST_CATCHUP_MINUTES: {{ .Values.config.digestCatchupMinutes | quote }}

@@ -1,0 +1,7 @@
+EOL Radar bot release {{ .Release.Name }} is installed.
+
+The Monday digest scheduler runs in this pod. replicaCount is {{ .Values.replicaCount }} and config.digestCron is {{ .Values.config.digestCron | quote }}. Keep one replica while the cron is not "off".
+
+Health check:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "eolradar-bot.fullname" . }} 8080:{{ .Values.service.port }}
+  curl http://127.0.0.1:8080/healthz

@@ -22,8 +22,11 @@ Do not commit `.dev.vars`, tokens, or signing secrets.
 
 - `src/core` fetches the [EOL Radar JSON API](https://eolradar.dev/api/), parses `/eol` text, matches service names, and builds a `BotMessage`.
 - `src/core/block-kit.ts` renders that message as Slack Block Kit.
-- `src/slack` verifies Slack signatures and calls `chat.postMessage`.
-- `src/index.ts` is the Worker (`fetch` for `/slack/commands`, `scheduled` for the Monday digest).
+- `src/slack` verifies Slack signatures, accepts slash commands, speaks Socket Mode, and calls `chat.postMessage`.
+- `src/app.ts` is the HTTP app both runtimes serve (`/health`, `/healthz`, `/readyz`, `/slack/commands`).
+- `src/index.ts` is the Worker adapter (`fetch`, and `scheduled` for the Monday digest).
+- `src/node` is the Node.js server, its environment, and the in-process scheduler.
+- `src/store` is the self-hosted key-value store (memory, a JSON file, or SQLite).
 
 A Microsoft Teams adapter should call `runCommand` and `buildDigest`, then render `BotMessage` itself (for example as an Adaptive Card). It should not need to change the API client or the matcher.
 
@@ -39,4 +42,4 @@ Keep fixtures small. If `schema_version` changes, update the parser and the fixt
 
 ## Pull requests
 
-GitHub Actions runs `npm run lint`, `npm test`, and `npm run typecheck` on every pull request.
+GitHub Actions runs `npm run lint`, `npm test`, `npm run typecheck`, and `npm run build` on every pull request. A second job builds the container, calls `/healthz`, renders the Helm chart, and applies the Kubernetes manifests to a kind cluster.

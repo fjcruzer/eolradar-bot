@@ -12,6 +12,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "build": "node scripts/build-node.mjs",
+    "start": "node bin/eolradar-bot.mjs",
+    "dev:server": "tsx src/node/main.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
@@ -27,8 +30,13 @@
     "url": "https://github.com/fjcruzer/eolradar-bot/issues"
   },
   "homepage": "https://github.com/fjcruzer/eolradar-bot#readme",
+  "bin": {
+    "eolradar-bot": "./bin/eolradar-bot.mjs"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^22.15.17",
+    "esbuild": "^0.28.2",
     "eslint": "^10.15.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
