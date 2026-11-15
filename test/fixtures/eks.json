@@ -1,0 +1,172 @@
+{
+  "schema_version": "1",
+  "generated_at": "2026-11-15T02:25:51.796Z",
+  "slug": "eks",
+  "name": "Amazon EKS",
+  "provider": "AWS",
+  "category": "Kubernetes",
+  "page_url": "https://eolradar.dev/services/eks/",
+  "last_updated": "2026-10-26T20:51:28Z",
+  "versions": [
+    {
+      "version": "1.37",
+      "release_date": "2026-10-01",
+      "standard_support_end": "2027-12-01",
+      "extended_support_end": "2028-12-01",
+      "status": "standard",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.36",
+      "release_date": "2026-06-02",
+      "standard_support_end": "2027-08-02",
+      "extended_support_end": "2028-08-02",
+      "status": "standard",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.35",
+      "release_date": "2026-01-28",
+      "standard_support_end": "2027-03-27",
+      "extended_support_end": "2028-03-27",
+      "status": "standard",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.34",
+      "release_date": "2025-10-06",
+      "standard_support_end": "2026-12-02",
+      "extended_support_end": "2027-12-02",
+      "status": "standard",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.33",
+      "release_date": "2025-05-28",
+      "standard_support_end": "2026-07-29",
+      "extended_support_end": "2027-07-29",
+      "status": "extended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.32",
+      "release_date": "2025-01-25",
+      "standard_support_end": "2026-03-23",
+      "extended_support_end": "2027-03-23",
+      "status": "extended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.31",
+      "release_date": "2024-09-26",
+      "standard_support_end": "2025-11-26",
+      "extended_support_end": "2026-11-26",
+      "status": "extended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.30",
+      "release_date": "2024-05-23",
+      "standard_support_end": "2025-07-23",
+      "extended_support_end": "2026-07-23",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.29",
+      "release_date": "2024-01-23",
+      "standard_support_end": "2025-03-23",
+      "extended_support_end": "2026-03-23",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.28",
+      "release_date": "2023-09-26",
+      "standard_support_end": "2024-11-26",
+      "extended_support_end": "2025-11-26",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.27",
+      "release_date": "2023-05-24",
+      "standard_support_end": "2024-07-24",
+      "extended_support_end": "2025-07-24",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.26",
+      "release_date": "2023-04-11",
+      "standard_support_end": "2024-06-11",
+      "extended_support_end": "2025-06-11",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.25",
+      "release_date": "2023-02-21",
+      "standard_support_end": "2024-05-01",
+      "extended_support_end": "2025-05-01",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.24",
+      "release_date": "2022-11-15",
+      "standard_support_end": "2024-01-31",
+      "extended_support_end": "2025-01-31",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.23",
+      "release_date": "2022-08-11",
+      "standard_support_end": "2023-10-11",
+      "extended_support_end": "2024-10-11",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.22",
+      "release_date": "2022-04-04",
+      "standard_support_end": "2023-06-04",
+      "extended_support_end": "2024-09-01",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.21",
+      "release_date": "2021-07-19",
+      "standard_support_end": "2023-02-16",
+      "extended_support_end": "2024-07-15",
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.20",
+      "release_date": "2021-05-18",
+      "standard_support_end": "2022-11-01",
+      "extended_support_end": null,
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.19",
+      "release_date": "2021-02-16",
+      "standard_support_end": "2022-08-01",
+      "extended_support_end": null,
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    },
+    {
+      "version": "1.18",
+      "release_date": "2020-10-13",
+      "standard_support_end": "2022-08-15",
+      "extended_support_end": null,
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"
+    }
+  ]
+}

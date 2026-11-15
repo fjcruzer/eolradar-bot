@@ -1,0 +1,18 @@
+# Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
+# Production values are Worker secrets: `npx wrangler secret put <NAME>`.
+
+# Slack app → Basic Information → Signing Secret
+SLACK_SIGNING_SECRET=
+
+# Slack app → OAuth & Permissions → Bot User OAuth Token (xoxb-...)
+SLACK_BOT_TOKEN=
+
+# Channel ID that receives the Monday digest (right-click the channel →
+# View channel details → copy the ID at the bottom, it looks like C0123ABCDEF).
+# Leave empty to skip the digest.
+SLACK_DIGEST_CHANNEL=
+
+# Comma-separated service slugs to include in the digest, for example
+# eks,rds-postgresql,lambda
+# Use all (or leave empty) to include every service.
+DIGEST_SERVICES=all
