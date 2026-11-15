@@ -1,0 +1,36 @@
+{
+  "schema_version": "1",
+  "generated_at": "2026-11-15T02:25:51.796Z",
+  "slug": "lambda",
+  "name": "AWS Lambda runtimes",
+  "provider": "AWS",
+  "category": "Serverless",
+  "page_url": "https://eolradar.dev/services/lambda/",
+  "last_updated": "2026-11-12T18:39:44Z",
+  "versions": [
+    {
+      "version": "Node.js 26",
+      "release_date": null,
+      "standard_support_end": null,
+      "extended_support_end": null,
+      "status": "unknown",
+      "source_url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    },
+    {
+      "version": "Node.js 24",
+      "release_date": null,
+      "standard_support_end": "2028-04-30",
+      "extended_support_end": null,
+      "status": "standard",
+      "source_url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    },
+    {
+      "version": ".NET 8",
+      "release_date": null,
+      "standard_support_end": "2026-11-10",
+      "extended_support_end": null,
+      "status": "ended",
+      "source_url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+display_information:
+  name: EOL Radar
+  description: End-of-support dates for cloud services, from eolradar.dev
+  background_color: "#0b3a5b"
+  long_description: |
+    Look up standard and extended support end dates with /eol, and get a
+    weekly digest of versions that are ending soon. Data comes from the
+    public EOL Radar JSON API. Dates are a planning aid; confirm them with
+    the provider before you upgrade or budget.
+features:
+  bot_user:
+    display_name: EOL Radar
+    always_online: false
+  slash_commands:
+    - command: /eol
+      # Replace the host with the workers.dev URL printed by `wrangler deploy`.
+      url: https://eolradar-bot.example.workers.dev/slack/commands
+      description: Look up cloud end-of-support dates
+      usage_hint: "[service | upcoming [30|90|180]]"
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - commands
+      - chat:write
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

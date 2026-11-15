@@ -1,0 +1,33 @@
+# Alternative to the Cloudflare cron in wrangler.jsonc.
+# Copy this file to .github/workflows/weekly-digest.yml and delete the cron
+# trigger from wrangler.jsonc so the digest is not posted twice.
+#
+# Repository secrets:
+#   SLACK_BOT_TOKEN
+#   SLACK_DIGEST_CHANNEL
+# Optional repository variable:
+#   DIGEST_SERVICES   comma-separated slugs, empty means every service
+
+name: Weekly digest
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 14:00 UTC Monday, same moment as the Worker cron.
+    - cron: "0 14 * * 1"
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run digest
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_DIGEST_CHANNEL: ${{ secrets.SLACK_DIGEST_CHANNEL }}
+          DIGEST_SERVICES: ${{ vars.DIGEST_SERVICES }}

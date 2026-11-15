@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "eolradar-bot",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    }
+  },
+  // Monday 14:00 UTC. Cloudflare cron weekdays are names (MON) so this is
+  // not the numeric Sunday=1 convention.
+  "triggers": {
+    "crons": ["0 14 * * MON"]
+  },
+  "vars": {
+    "EOL_API_BASE": "https://eolradar.dev"
+  },
+  // Names only. Values are set with `wrangler secret put` and are not in git.
+  // See .dev.vars.example for local development.
+  "secrets": {
+    "required": [
+      "SLACK_SIGNING_SECRET",
+      "SLACK_BOT_TOKEN",
+      "SLACK_DIGEST_CHANNEL",
+      "DIGEST_SERVICES"
+    ]
+  }
+}

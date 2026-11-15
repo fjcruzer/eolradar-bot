@@ -1,0 +1,190 @@
+{
+  "schema_version": "1",
+  "generated_at": "2026-11-15T02:25:51.796Z",
+  "services": [
+    {
+      "slug": "eks",
+      "name": "Amazon EKS",
+      "provider": "AWS",
+      "category": "Kubernetes",
+      "page_url": "https://eolradar.dev/services/eks/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "gke",
+      "name": "Google Kubernetes Engine (GKE)",
+      "provider": "Google Cloud",
+      "category": "Kubernetes",
+      "page_url": "https://eolradar.dev/services/gke/",
+      "last_updated": "2026-11-04T19:33:39Z"
+    },
+    {
+      "slug": "aks",
+      "name": "Azure Kubernetes Service (AKS)",
+      "provider": "Azure",
+      "category": "Kubernetes",
+      "page_url": "https://eolradar.dev/services/aks/",
+      "last_updated": "2026-11-04T19:33:39Z"
+    },
+    {
+      "slug": "rds-mysql",
+      "name": "Amazon RDS for MySQL",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/rds-mysql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "rds-postgresql",
+      "name": "Amazon RDS for PostgreSQL",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/rds-postgresql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "aurora-mysql",
+      "name": "Amazon Aurora MySQL",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/aurora-mysql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "aurora-postgresql",
+      "name": "Amazon Aurora PostgreSQL",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/aurora-postgresql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "cloud-sql",
+      "name": "Google Cloud SQL (MySQL & PostgreSQL)",
+      "provider": "Google Cloud",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/cloud-sql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "azure-mysql",
+      "name": "Azure Database for MySQL",
+      "provider": "Azure",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/azure-mysql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "azure-postgresql",
+      "name": "Azure Database for PostgreSQL",
+      "provider": "Azure",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/azure-postgresql/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "lambda",
+      "name": "AWS Lambda runtimes",
+      "provider": "AWS",
+      "category": "Serverless",
+      "page_url": "https://eolradar.dev/services/lambda/",
+      "last_updated": "2026-11-12T18:39:44Z"
+    },
+    {
+      "slug": "cloud-functions",
+      "name": "Google Cloud Run functions (Cloud Functions)",
+      "provider": "Google Cloud",
+      "category": "Serverless",
+      "page_url": "https://eolradar.dev/services/cloud-functions/",
+      "last_updated": "2026-11-04T19:33:39Z"
+    },
+    {
+      "slug": "azure-functions",
+      "name": "Azure Functions",
+      "provider": "Azure",
+      "category": "Serverless",
+      "page_url": "https://eolradar.dev/services/azure-functions/",
+      "last_updated": "2026-11-10T18:28:28Z"
+    },
+    {
+      "slug": "opensearch",
+      "name": "Amazon OpenSearch Service (incl. legacy Elasticsearch)",
+      "provider": "AWS",
+      "category": "Search",
+      "page_url": "https://eolradar.dev/services/opensearch/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "elasticache",
+      "name": "Amazon ElastiCache (Redis OSS, Valkey, Memcached)",
+      "provider": "AWS",
+      "category": "Cache",
+      "page_url": "https://eolradar.dev/services/elasticache/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "msk",
+      "name": "Amazon MSK (Apache Kafka versions)",
+      "provider": "AWS",
+      "category": "Streaming",
+      "page_url": "https://eolradar.dev/services/msk/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "amazon-mq",
+      "name": "Amazon MQ for ActiveMQ",
+      "provider": "AWS",
+      "category": "Messaging",
+      "page_url": "https://eolradar.dev/services/amazon-mq/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "documentdb",
+      "name": "Amazon DocumentDB",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/documentdb/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "neptune",
+      "name": "Amazon Neptune engine versions",
+      "provider": "AWS",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/neptune/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "cloud-composer",
+      "name": "Google Cloud Composer (Airflow)",
+      "provider": "Google Cloud",
+      "category": "Data & analytics",
+      "page_url": "https://eolradar.dev/services/cloud-composer/",
+      "last_updated": "2026-11-10T18:28:28Z"
+    },
+    {
+      "slug": "dataproc",
+      "name": "Google Cloud Dataproc image versions",
+      "provider": "Google Cloud",
+      "category": "Data & analytics",
+      "page_url": "https://eolradar.dev/services/dataproc/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    },
+    {
+      "slug": "alloydb",
+      "name": "AlloyDB for PostgreSQL",
+      "provider": "Google Cloud",
+      "category": "Database",
+      "page_url": "https://eolradar.dev/services/alloydb/",
+      "last_updated": "2026-11-04T19:33:39Z"
+    },
+    {
+      "slug": "hdinsight",
+      "name": "Azure HDInsight versions",
+      "provider": "Azure",
+      "category": "Data & analytics",
+      "page_url": "https://eolradar.dev/services/hdinsight/",
+      "last_updated": "2026-10-26T20:51:28Z"
+    }
+  ]
+}

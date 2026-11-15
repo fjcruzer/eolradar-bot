@@ -1,0 +1,39 @@
+{
+  "name": "eolradar-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Slack bot for EOL Radar end-of-support dates. The core is shared so a Microsoft Teams adapter can be added later.",
+  "license": "MIT",
+  "author": "Aris Cruz",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "typecheck": "wrangler types && tsc --noEmit",
+    "cf-typegen": "wrangler types",
+    "digest": "tsx scripts/weekly-digest.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fjcruzer/eolradar-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fjcruzer/eolradar-bot/issues"
+  },
+  "homepage": "https://github.com/fjcruzer/eolradar-bot#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.162.0"
+  }
+}
