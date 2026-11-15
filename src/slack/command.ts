@@ -1,6 +1,6 @@
 import type { EolClient } from "../core/client";
 import { runCommand } from "../core/commands";
-import { jsonResponse, slashCommandResponse } from "./api";
+import { jsonResponse, slashCommandResponse, type SlackCommandPayload } from "./api";
 import { verifySlackSignature } from "./verify";
 
 const MAX_BODY_CHARS = 100_000;
@@ -52,9 +52,13 @@ export async function handleSlackCommand(
     }),
   );
 
+  return jsonResponse(await executeSlashCommand(form.text, input.client));
+}
+
+/** Shared by the HTTP slash-command handler and Socket Mode. */
+export async function executeSlashCommand(text: string, client: EolClient): Promise<SlackCommandPayload> {
   try {
-    const message = await runCommand(form.text, input.client);
-    return jsonResponse(slashCommandResponse(message));
+    return slashCommandResponse(await runCommand(text, client));
   } catch (error) {
     console.error(
       JSON.stringify({
@@ -62,15 +66,12 @@ export async function handleSlackCommand(
         error: error instanceof Error ? error.message : String(error),
       }),
     );
-    return jsonResponse(
-      slashCommandResponse({
-        fallbackText: "EOL Radar hit an unexpected error. Try again in a few minutes.",
-        paragraphs: [
-          [{ kind: "text", text: "EOL Radar hit an unexpected error. Try again in a few minutes." }],
-        ],
-        links: [],
-      }),
-    );
+    const fallback = "EOL Radar hit an unexpected error. Try again in a few minutes.";
+    return slashCommandResponse({
+      fallbackText: fallback,
+      paragraphs: [[{ kind: "text", text: fallback }]],
+      links: [],
+    });
   }
 }
 

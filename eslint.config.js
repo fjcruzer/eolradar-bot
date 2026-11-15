@@ -17,7 +17,12 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ["eslint.config.js", "vitest.config.ts"],
+          allowDefaultProject: [
+            "eslint.config.js",
+            "vitest.config.ts",
+            "bin/eolradar-bot.mjs",
+            "scripts/build-node.mjs",
+          ],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -25,6 +30,16 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/consistent-type-imports": "error",
+    },
+  },
+  {
+    files: ["bin/**/*.mjs", "scripts/**/*.mjs"],
+    languageOptions: {
+      globals: {
+        URL: "readonly",
+        console: "readonly",
+        process: "readonly",
+      },
     },
   },
 );

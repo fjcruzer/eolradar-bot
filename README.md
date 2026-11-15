@@ -2,6 +2,8 @@
 
 A Slack bot for [EOL Radar](https://eolradar.dev/) end-of-support dates. Ask `/eol` about a cloud service, or let a Monday digest post what is ending in the next 90 days.
 
+You can run it as a Cloudflare Worker, or self-host it. The self-hosted process does not use Cloudflare. See [Deployment options](#deployment-options).
+
 The only data source is the public JSON API at [https://eolradar.dev/api/v1/](https://eolradar.dev/api/v1/). There is no API key. Each document has `schema_version` `"1"` and `generated_at`, and the API asks clients to cache responses for `max-age=300`.
 
 Dates are a planning aid. Confirm them with the provider before you upgrade or set a budget. EOL Radar says so too: the official provider page is the authority.
@@ -26,7 +28,7 @@ Statuses are the ones EOL Radar publishes: standard support, extended support, e
 
 ## Weekly digest
 
-The Worker cron runs at **14:00 UTC every Monday**. It posts to `SLACK_DIGEST_CHANNEL` what is hitting end of standard or extended support in the next 90 days.
+The Worker cron runs at **14:00 UTC every Monday**. It posts to `SLACK_DIGEST_CHANNEL` what is hitting end of standard or extended support in the next 90 days. The self-hosted process uses the same schedule. Enable one of them. Set `DIGEST_CRON=off` on the self-hosted process when the Worker posts, or clear `triggers.crons` in `wrangler.jsonc` when the self-hosted process posts.
 
 `DIGEST_SERVICES` is an optional comma-separated list of slugs (`eks,rds-postgresql,lambda`). Set it to `all`, or leave it empty, to include every service. Unknown slugs are called out in the message so a typo is visible.
 
@@ -37,16 +39,34 @@ The Workers Free plan includes Cron Triggers (five per account). This job mostly
 ## How it is split
 
 ```text
-src/core     API client, /eol parsing, name matching, BotMessage, Block Kit
-src/slack    request signatures, slash-command HTTP, chat.postMessage
-src/index.ts Worker fetch handler and the Monday scheduled handler
+src/core       API client, /eol parsing, name matching, BotMessage, Block Kit
+src/slack      request signatures, slash-command HTTP, Socket Mode, chat.postMessage
+src/app.ts     /health, /healthz, /readyz, and /slack/commands
+src/index.ts   Cloudflare Worker adapter (fetch and the Monday cron)
+src/node       Node.js HTTP server, environment, in-process scheduler
+src/store      memory, JSON file, and SQLite stores for the self-hosted process
 ```
 
 `BotMessage` is not Slack-specific. `src/core/block-kit.ts` is the Slack renderer. A Microsoft Teams adapter can call `runCommand` (`src/core/commands.ts`) and `buildDigest` (`src/core/digest.ts`) and render the same message as an Adaptive Card, without changing the API client or the matcher.
 
 Slash-command replies are ephemeral (only the person who asked sees them). The digest is a normal channel message.
 
+## Deployment options
+
+| Mode | What runs |
+| --- | --- |
+| [Cloudflare Workers](#setup) | `wrangler deploy`. Cron Triggers and the Cache API stay on Cloudflare. |
+| [Script](docs/self-hosting.md#script) | `npm run build && npm start` on a machine with Node.js 22. A systemd unit is in `deploy/systemd/`. |
+| [Container](docs/self-hosting.md#container) | `docker compose up`. The image is `ghcr.io/fjcruzer/eolradar-bot`. |
+| [Kubernetes / Helm](docs/self-hosting.md#kubernetes-and-helm) | `deploy/kubernetes/` and `deploy/helm/eolradar-bot`. |
+
+Self-hosted mode has no Cloudflare dependency. The process only makes outbound HTTPS calls to Slack and `https://eolradar.dev`. Socket Mode adds an outbound WebSocket to Slack, so the bot does not need a public request URL. Step-by-step setup, including the Slack app differences, is in [docs/self-hosting.md](docs/self-hosting.md).
+
+Enable one Monday scheduler: the Worker cron, the self-hosted process, or the GitHub Actions workflow.
+
 ## Setup
+
+These steps deploy the Cloudflare Worker. For a host with no Cloudflare account, use [docs/self-hosting.md](docs/self-hosting.md) instead.
 
 You need Node.js 22 or newer, a free [Cloudflare Workers](https://workers.cloudflare.com/) account, and a Slack workspace where you can create apps.
 
@@ -141,6 +161,8 @@ while `wrangler dev` is running, with `.dev.vars` filled in. Against the deploye
 | `SLACK_BOT_TOKEN` | Worker secret | `chat.postMessage` for the digest |
 | `SLACK_DIGEST_CHANNEL` | Worker secret | Channel id. Empty skips the digest |
 | `DIGEST_SERVICES` | Worker secret | Comma-separated slugs. `all` or empty means every service |
+
+Self-hosted mode reads the same Slack and API names from the environment, plus `PORT`, `STORE`, `DIGEST_CRON`, and `SLACK_APP_TOKEN`. The full list is in [docs/self-hosting.md](docs/self-hosting.md).
 
 The bot checks the Slack timestamp is within five minutes and compares the HMAC with a fixed-time equality check. A bad signature gets HTTP 401. API failures become a short ephemeral message instead of a stack trace. Responses are cached for the `Cache-Control` `max-age` (300 seconds when the header matches the API docs). HTTP errors and `schema_version` other than `"1"` are not cached.
 

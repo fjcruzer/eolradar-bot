@@ -1,0 +1,32 @@
+# Example unit. Adjust paths if Node or the checkout live somewhere else.
+# Create the user first: sudo useradd --system --home-dir /opt/eolradar-bot eolradar
+# Put secrets in /etc/eolradar-bot.env (see .env.example). Do not commit that file.
+# StateDirectory creates /var/lib/eolradar-bot and owns it as the service user.
+
+[Unit]
+Description=EOL Radar Slack bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=eolradar
+Group=eolradar
+WorkingDirectory=/opt/eolradar-bot
+EnvironmentFile=/etc/eolradar-bot.env
+Environment=NODE_ENV=production
+Environment=HOME=/var/lib/eolradar-bot
+Environment=STORE=file
+Environment=STORE_PATH=/var/lib/eolradar-bot/store.json
+ExecStart=/usr/bin/node /opt/eolradar-bot/dist/server.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+StateDirectory=eolradar-bot
+ReadWritePaths=/var/lib/eolradar-bot
+
+[Install]
+WantedBy=multi-user.target

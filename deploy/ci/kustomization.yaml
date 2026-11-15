@@ -1,0 +1,12 @@
+# CI only. Points the manifests at a locally loaded image and turns the
+# digest scheduler off. Production installs use deploy/kubernetes.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../kubernetes
+images:
+  - name: ghcr.io/fjcruzer/eolradar-bot
+    newName: eolradar-bot
+    newTag: ci
+patches:
+  - path: digest-off.yaml
